@@ -102,12 +102,12 @@ def _write_registers(context: ModbusServerContext, state: AnalyzerState) -> None
     registers[REG_ALARM] = state.alarm
     registers[REG_HEALTH] = state.health_percent
 
-    # Write to slave/unit 0x00 holding registers.
-    context[0x00].setValues(3, 0, registers)
+    # Write to slave/unit 0x00 holding registers (1-5).
+    context[0x00].setValues(3, 1, registers)
 
 
 def _read_registers(context: ModbusServerContext) -> list[int]:
-    return context[0x00].getValues(3, 0, count=5)
+    return context[0x00].getValues(3, 1, count=5)
 
 
 async def _simulation_loop(context: ModbusServerContext, stop_event: asyncio.Event) -> None:
@@ -135,7 +135,7 @@ async def _simulation_loop(context: ModbusServerContext, stop_event: asyncio.Eve
 
 async def run_server() -> None:
     """Run Modbus server and simulation task until interrupted."""
-    store = ModbusDeviceContext(hr=ModbusSequentialDataBlock(0, [0] * 100))
+    store = ModbusDeviceContext(hr=ModbusSequentialDataBlock(1, [0] * 100))
     context = ModbusServerContext(devices={0x00: store}, single=False)
 
     stop_event = asyncio.Event()
