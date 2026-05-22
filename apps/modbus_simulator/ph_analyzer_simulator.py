@@ -45,12 +45,12 @@ def _clamp(value: float, minimum: float, maximum: float) -> float:
 
 
 def _calculate_alarm(ph: float, temperature_c: float) -> int:
+    if temperature_c < 5 or temperature_c > 45:
+        return 3
     if ph < 6.5:
         return 1
     if ph > 8.5:
         return 2
-    if temperature_c < 5 or temperature_c > 45:
-        return 3
     return 0
 
 
