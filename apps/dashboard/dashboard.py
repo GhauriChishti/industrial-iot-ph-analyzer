@@ -8,7 +8,6 @@ import pandas as pd
 import plotly.graph_objects as go
 import requests
 import streamlit as st
-import streamlit.components.v1 as components
 
 API_BASE_URL = "http://127.0.0.1:8000"
 LATEST_ENDPOINT = f"{API_BASE_URL}/api/v1/telemetry/latest"
@@ -82,15 +81,10 @@ def configure_page() -> None:
 
 
 def enable_auto_refresh() -> None:
-    components.html(
-        f"""
-        <script>
-            setTimeout(function() {{
-                window.parent.location.reload();
-            }}, {AUTO_REFRESH_MS});
-        </script>
-        """,
-        height=0,
+    refresh_seconds = max(AUTO_REFRESH_MS // 1000, 1)
+    st.markdown(
+        f'<meta http-equiv="refresh" content="{refresh_seconds}">',
+        unsafe_allow_html=True,
     )
 
 
@@ -203,9 +197,9 @@ def main() -> None:
 
     col1, col2 = st.columns(2)
     with col1:
-        st.plotly_chart(draw_gauge(ph, "Live pH", 0, 14, "#00bcd4"), use_container_width=True)
+        st.plotly_chart(draw_gauge(ph, "Live pH", 0, 14, "#00bcd4"), width="stretch")
     with col2:
-        st.plotly_chart(draw_gauge(temp_c, "Live Temperature (°C)", -10, 120, "#ff6f61"), use_container_width=True)
+        st.plotly_chart(draw_gauge(temp_c, "Live Temperature (°C)", -10, 120, "#ff6f61"), width="stretch")
 
     m1, m2, m3 = st.columns(3)
     with m1:
@@ -223,12 +217,12 @@ def main() -> None:
     with c1:
         st.plotly_chart(
             trend_chart(history_df, "ph", "pH Trend", "#00bcd4", "pH"),
-            use_container_width=True,
+            width="stretch",
         )
     with c2:
         st.plotly_chart(
             trend_chart(history_df, "temperature", "Temperature Trend", "#ff6f61", "Temperature (°C)"),
-            use_container_width=True,
+            width="stretch",
         )
 
 
