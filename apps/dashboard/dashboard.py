@@ -9,6 +9,7 @@ import pandas as pd
 import plotly.graph_objects as go
 import requests
 import streamlit as st
+from streamlit_autorefresh import st_autorefresh
 
 API_BASE_URL = "http://127.0.0.1:8000"
 LATEST_ENDPOINT = f"{API_BASE_URL}/api/v1/telemetry/latest"
@@ -106,7 +107,7 @@ def configure_page() -> None:
 
 
 def enable_auto_refresh() -> None:
-    st.autorefresh(interval=AUTO_REFRESH_MS, key="scada_refresh")
+    st_autorefresh(interval=AUTO_REFRESH_MS, key="scada_refresh")
 
 
 def fetch_json(url: str, *, params: dict[str, int] | None = None) -> tuple[dict | list, float]:
