@@ -1,0 +1,118 @@
+[
+    {
+        "id": "fb322d3dbaee62cb",
+        "type": "tab",
+        "label": "Flow 1",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "5f4040e71c188d40",
+        "type": "modbus-read",
+        "z": "fb322d3dbaee62cb",
+        "name": "Read pH Analyzer Registers",
+        "topic": "",
+        "showStatusActivities": false,
+        "logIOActivities": false,
+        "showErrors": false,
+        "showWarnings": true,
+        "unitid": "1",
+        "dataType": "HoldingRegister",
+        "adr": "1",
+        "quantity": "5",
+        "rate": "1",
+        "rateUnit": "s",
+        "delayOnStart": false,
+        "enableDeformedMessages": false,
+        "startDelayTime": "",
+        "server": "6c6582d34a1e1f95",
+        "useIOFile": false,
+        "ioFile": "",
+        "useIOForPayload": false,
+        "emptyMsgOnFail": false,
+        "x": 180,
+        "y": 100,
+        "wires": [
+            [
+                "6fe56e098f424ada"
+            ],
+            []
+        ]
+    },
+    {
+        "id": "0b2498591d766360",
+        "type": "debug",
+        "z": "fb322d3dbaee62cb",
+        "name": "debug 1",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 900,
+        "y": 120,
+        "wires": []
+    },
+    {
+        "id": "6fe56e098f424ada",
+        "type": "function",
+        "z": "fb322d3dbaee62cb",
+        "name": "Decode Telemetry",
+        "func": "const regs = msg.payload;\n\nmsg.payload = {\n    timestamp: new Date().toISOString(),\n    ph: regs[0] / 100,\n    temperature: regs[1] / 10,\n    status: regs[2],\n    alarm: regs[3],\n    health: regs[4]\n};\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 590,
+        "y": 120,
+        "wires": [
+            [
+                "0b2498591d766360"
+            ]
+        ]
+    },
+    {
+        "id": "6c6582d34a1e1f95",
+        "type": "modbus-client",
+        "name": "",
+        "clienttype": "tcp",
+        "bufferCommands": true,
+        "stateLogEnabled": false,
+        "queueLogEnabled": false,
+        "failureLogEnabled": true,
+        "tcpHost": "127.0.0.1",
+        "tcpPort": "5020",
+        "tcpType": "DEFAULT",
+        "serialPort": "/dev/ttyUSB",
+        "serialType": "RTU-BUFFERD",
+        "serialBaudrate": 9600,
+        "serialDatabits": 8,
+        "serialStopbits": 1,
+        "serialParity": "none",
+        "serialConnectionDelay": 100,
+        "serialAsciiResponseStartDelimiter": "0x3A",
+        "unit_id": 1,
+        "commandDelay": 1,
+        "clientTimeout": 1000,
+        "reconnectOnTimeout": true,
+        "reconnectTimeout": 2000,
+        "parallelUnitIdsAllowed": true,
+        "showErrors": false,
+        "showWarnings": true,
+        "showLogs": true
+    },
+    {
+        "id": "3fc24bae48305df3",
+        "type": "global-config",
+        "env": [],
+        "modules": {
+            "node-red-contrib-modbus": "5.45.2"
+        }
+    }
+]
