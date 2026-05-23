@@ -103,7 +103,7 @@ def fetch_json(url: str, *, params: dict[str, int] | None = None) -> dict | list
 def parse_history(payload: dict | list) -> pd.DataFrame:
     records = payload if isinstance(payload, list) else payload.get("items", [])
     if not records:
-        return pd.DataFrame(columns=["timestamp", "ph", "temperature_c"])
+        return pd.DataFrame(columns=["timestamp", "ph", "temperature"])
 
     df = pd.DataFrame(records)
     df["timestamp"] = pd.to_datetime(df["timestamp"], errors="coerce", utc=True)
@@ -194,7 +194,7 @@ def main() -> None:
     history_df = parse_history(history_payload)
 
     ph = float(latest.get("ph", 0.0))
-    temp_c = float(latest.get("temperature_c", latest.get("temperature", 0.0)))
+    temp_c = float(latest.get("temperature", latest.get("temperature", 0.0)))
     alarm_code = int(latest.get("alarm", 0))
     sensor_ok = bool(latest.get("sensor_ok", latest.get("sensor_health", True)))
     analyzer_online = bool(latest.get("analyzer_online", latest.get("online", True)))
@@ -227,7 +227,7 @@ def main() -> None:
         )
     with c2:
         st.plotly_chart(
-            trend_chart(history_df, "temperature_c", "Temperature Trend", "#ff6f61", "Temperature (°C)"),
+            trend_chart(history_df, "temperature", "Temperature Trend", "#ff6f61", "Temperature (°C)"),
             use_container_width=True,
         )
 
